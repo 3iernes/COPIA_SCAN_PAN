@@ -13,7 +13,7 @@ const Scanner = ({ navigation }) => {
   const { point, setModal, setData, setApiResponse } = useAppContext();
   const [scanned, setScanned] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
-  
+  const [error,setError] = useState("");
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -47,7 +47,8 @@ const Scanner = ({ navigation }) => {
       setModal(point);
       navigation.navigate("home");
     } catch (error) {
-      setModal(error);
+      setError(error);
+      setModal("error");
       navigation.navigate("home");
     }
   };
@@ -61,6 +62,7 @@ const Scanner = ({ navigation }) => {
 
   return (
     <>
+      <Text>{error}</Text>
       <StatusBar style="light" />
       <BarCodeScanner
         onBarCodeScanned={scanned ? undefined : handleScanned}

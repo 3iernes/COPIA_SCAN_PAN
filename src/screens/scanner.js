@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { View, StyleSheet, Text, Button } from "react-native";
 //Context
 import { useAppContext } from "../context/useContext";
@@ -7,11 +7,24 @@ import { useAppContext } from "../context/useContext";
 import axios from "axios";
 //Camara
 import { Camera } from "expo-camera";
+import {BarCodeScanner} from "expo-barcode-scanner"
 
 const Scanner = ({ navigation }) => {
   const { point, setModal, setData, setApiResponse } = useAppContext();
   const [scanned, setScanned] = useState(false);
-  const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [hasPermission, setHasPermission] = useState(null);
+  
+  useEffect(() => {
+    const getBarCodeScannerPermissions = async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    };
+
+    getBarCodeScannerPermissions();
+  }, []);
+
+
+
   const handleScanned = async (data) => {
     setScanned(true);
     try {
@@ -40,23 +53,20 @@ const Scanner = ({ navigation }) => {
       navigation.navigate("home");
     }
   };
-  if (!permission) {
-    return <View />;
+
+  if (hasPermission === null) {
+    return <Text>Solicitando permiso para acceder a la camara</Text>;
   }
-  if (!permission.granted) {
-    return (
-      <View style={styles.container}>
-        <Text style={{ textAlign: 'center' }}>Se necesitan permisos para activar la camara</Text>
-        <Button onPress={requestPermission} title="Aceptar permisos" />
-      </View>
-    );
+  if (hasPermission === false) {
+    return <Text>Sin acceso a la camara</Text>;
   }
+
   return (
     <>
       <StatusBar style="light" />
-      <Camera
+      <BarCodeScanner
         onBarCodeScanned={scanned ? undefined : handleScanned}
-        style={styles.scanner}
+        style={StyleSheet.absoluteFillObject}
       />
     </>
   );

@@ -3,7 +3,7 @@ import { useAppContext } from "../../context/useContext";
 
 const Error = () => {
   const {data} = useAppContext()
-  return <Text>{data ? data : "Error"}</Text>;
+  return <Text>{data ? data.message : "Error"}</Text>;
 };
 
 export default Error;

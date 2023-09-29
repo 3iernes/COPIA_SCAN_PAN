@@ -1,12 +1,12 @@
 import { StatusBar } from "expo-status-bar";
 import { useState,useEffect } from "react";
-import { View, StyleSheet, Text, Button } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 //Context
 import { useAppContext } from "../context/useContext";
 //Axios
 import axios from "axios";
 //Camara
-import { Camera } from "expo-camera";
+//import { Camera } from "expo-camera";
 import {BarCodeScanner} from "expo-barcode-scanner"
 
 const Scanner = ({ navigation }) => {
@@ -22,8 +22,6 @@ const Scanner = ({ navigation }) => {
 
     getBarCodeScannerPermissions();
   }, []);
-
-
 
   const handleScanned = async (data) => {
     setScanned(true);
@@ -49,7 +47,7 @@ const Scanner = ({ navigation }) => {
       setModal(point);
       navigation.navigate("home");
     } catch (error) {
-      setModal("error");
+      setModal(error);
       navigation.navigate("home");
     }
   };
